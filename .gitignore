@@ -1,0 +1,7 @@
+.idea
+.pytest_cache
+__pycache__
+.coverage
+.env
+db.sqlite3
+shop_data.json
