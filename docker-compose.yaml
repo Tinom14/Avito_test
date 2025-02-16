@@ -4,27 +4,27 @@ services:
   db:
     image: postgres:17
     restart: always
-    env_file:
-      - .env
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     restart: always
-    env_file:
-      - .env
+    env_file: .env
     ports:
       - "8080:8080"
     depends_on:
       - db
-    command: gunicorn Avito_test.wsgi:application --bind 0.0.0.0:8080
-    volumes:
-      - .:/app
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+      gunicorn Avito_test.wsgi:application --bind 0.0.0.0:8080"
 
 volumes:
   postgres_data:
